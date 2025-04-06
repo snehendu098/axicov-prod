@@ -88,15 +88,18 @@ export default function AgentHome() {
         <div className="flex mb-6 justify-between items-center">
           {/* Conditional UI: Show "Create Agent" button only when agents exist */}
           {hasAgents ? (
-            <Link href="/create">
-              <button className="flex items-center px-6 py-2.5 rounded-full bg-gray-800 border border-gray-700 shadow-sm transition-all duration-300 hover:bg-gray-700 group">
-                <Plus
-                  size={16}
-                  className="mr-2 text-rose-400 group-hover:scale-110 transition-transform duration-300"
-                />
-                <span className="font-medium">Create Agent</span>
-              </button>
-            </Link>
+            <>
+              <Link href="/create">
+                <button className="flex items-center px-6 py-2.5 rounded-full bg-gray-800 border border-gray-700 shadow-sm transition-all duration-300 hover:bg-gray-700 group">
+                  <Plus
+                    size={16}
+                    className="mr-2 text-rose-400 group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <span className="font-medium">Create Agent</span>
+                </button>
+              </Link>
+              <div>Thirdweb connected button</div>
+            </>
           ) : null}
         </div>
 
