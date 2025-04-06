@@ -36,6 +36,7 @@ export default function AgentHome() {
   const [isHovered, setIsHovered] = useState(false);
   const [hasAgents, setHasAgents] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [agents, setAgents] = useState([]);
 
   useEffect(() => {
     setMounted(true);

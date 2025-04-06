@@ -7,6 +7,7 @@ export interface IAgent extends Document {
   privateKey: string;
   tools: number[];
   ownerWallet: string;
+  response: number;
 }
 
 const AgentSchema = new Schema<IAgent>(
@@ -34,6 +35,10 @@ const AgentSchema = new Schema<IAgent>(
     ownerWallet: {
       type: String,
       required: true,
+    },
+    response: {
+      type: Number,
+      default: 50,
     },
   },
   {
