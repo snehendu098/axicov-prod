@@ -34,7 +34,7 @@ const sampleAgents = [
 // Update the component name
 export default function AgentHome() {
   const [isHovered, setIsHovered] = useState(false);
-  const [hasAgents, setHasAgents] = useState(false);
+  const [hasAgents, setHasAgents] = useState(true);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
