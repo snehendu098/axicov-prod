@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { Agent } from "@/models/agent.model";
 import { dbConnect } from "@/lib/db";
 import { ApiResponse } from "@/interfaces";
+import Web3 from "web3";
 
 interface AgentCreateRequest {
   displayName: string;
@@ -35,13 +36,8 @@ export async function POST(req: Request) {
       }
     }
 
-    // TODO: Generate a new account for the agent
-    // const account = Account.generate();
-
-    // await aptos.fundAccount({
-    //   accountAddress: account.accountAddress,
-    //   amount: 0.01,
-    // });
+    const web3 = new Web3();
+    const account = web3.eth.accounts.create();
 
     const newAgent = new Agent({
       displayName: agentData.displayName,

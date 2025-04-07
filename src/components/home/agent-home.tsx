@@ -5,6 +5,10 @@ import { GridBackground } from "@/components/core/grid-background";
 import { AxicovLogo } from "@/components/core/axicov-logo";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { ThirdwebConnectButton } from "../thirdweb";
+import { useActiveAccount } from "thirdweb/react";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 // Update the sample agent data colors
 const sampleAgents = [
@@ -37,6 +41,7 @@ export default function AgentHome() {
   const [hasAgents, setHasAgents] = useState(true);
   const [mounted, setMounted] = useState(false);
   const [agents, setAgents] = useState([]);
+  const account = useActiveAccount();
 
   useEffect(() => {
     setMounted(true);
@@ -53,8 +58,28 @@ export default function AgentHome() {
     };
   }, [hasAgents]);
 
-  const toggleAgents = () => {
-    setHasAgents(!hasAgents);
+  const getAllAgents = async () => {
+    try {
+      toast.promise(
+        async () => {
+          const { data } = await axios.get(
+            `/api/agents/all?ownerWallet=${account?.address}`
+          );
+          if (data.success) {
+            setAgents(data.data);
+            setHasAgents(data.data.length > 0);
+          }
+        },
+        {
+          loading: "Loading agents...",
+          success: "Agents fetched successfully",
+          error: "Error fetching agents",
+        }
+      );
+    } catch (error) {
+      console.error("Error fetching agents:", error);
+      setHasAgents(false);
+    }
   };
 
   return (
@@ -99,9 +124,9 @@ export default function AgentHome() {
                   <span className="font-medium">Create Agent</span>
                 </button>
               </Link>
-              <div>Thirdweb connected button</div>
             </>
           ) : null}
+          {account?.address && <ThirdwebConnectButton />}
         </div>
 
         {hasAgents ? (
@@ -130,32 +155,36 @@ export default function AgentHome() {
               Create your own agent to customize actions & instructions
             </p>
 
-            <Link href="/create">
-              <button
-                className={`relative bg-rose-500 text-white rounded-lg px-8 py-3.5 font-medium transition-all duration-300 overflow-hidden group ${
-                  isHovered ? "pl-12" : "pl-8"
-                }`}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-              >
-                <span
-                  className={`absolute left-0 top-0 h-full flex items-center transition-all duration-300 ${
-                    isHovered
-                      ? "opacity-100 translate-x-4"
-                      : "opacity-0 -translate-x-4"
+            {account?.address && (
+              <Link href="/create">
+                <button
+                  className={`relative bg-rose-500 text-white rounded-lg px-8 py-3.5 font-medium transition-all duration-300 overflow-hidden group ${
+                    isHovered ? "pl-12" : "pl-8"
                   }`}
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
                 >
-                  <Zap size={20} className="animate-pulse" />
-                </span>
-                <span
-                  className={`transition-all duration-300 ${
-                    isHovered ? "translate-x-2" : "translate-x-0"
-                  }`}
-                >
-                  Create Agent
-                </span>
-              </button>
-            </Link>
+                  <span
+                    className={`absolute left-0 top-0 h-full flex items-center transition-all duration-300 ${
+                      isHovered
+                        ? "opacity-100 translate-x-4"
+                        : "opacity-0 -translate-x-4"
+                    }`}
+                  >
+                    <Zap size={20} className="animate-pulse" />
+                  </span>
+                  <span
+                    className={`transition-all duration-300 ${
+                      isHovered ? "translate-x-2" : "translate-x-0"
+                    }`}
+                  >
+                    Create Agent
+                  </span>
+                </button>
+              </Link>
+            )}
+
+            {!account?.address && <ThirdwebConnectButton />}
           </div>
         )}
       </div>
