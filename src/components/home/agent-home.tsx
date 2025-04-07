@@ -10,7 +10,6 @@ import { useActiveAccount } from "thirdweb/react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-// Update the sample agent data colors
 const sampleAgents = [
   {
     id: 1,
@@ -35,7 +34,6 @@ const sampleAgents = [
   },
 ];
 
-// Update the component name
 export default function AgentHome() {
   const [isHovered, setIsHovered] = useState(false);
   const [hasAgents, setHasAgents] = useState(false);
@@ -135,16 +133,15 @@ export default function AgentHome() {
           {account?.address && <ThirdwebConnectButton />}
         </div>
 
-        {hasAgents ? (
+        {hasAgents && agents.length > 0 ? (
           // Agent Cards Grid - Create New Agent card removed
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {sampleAgents.map((agent) => (
+            {agents.map((agent: any) => (
               <MinimalistAgentCard
-                key={agent.id}
-                id={agent.id}
-                name={agent.name}
+                key={agent._id}
+                id={agent._id}
+                name={agent.displyName}
                 description={agent.description}
-                color={agent.color}
               />
             ))}
           </div>
@@ -199,7 +196,7 @@ export default function AgentHome() {
 }
 
 // Refined minimalist card with always-visible icons
-function MinimalistAgentCard({ id, name, description, color }: any) {
+function MinimalistAgentCard({ id, name, description }: any) {
   return (
     <div className="group">
       <div className="relative bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] p-6 transition-all duration-300 hover:border-rose-500/30 overflow-hidden group-hover:translate-y-[-2px] h-full flex flex-col">
