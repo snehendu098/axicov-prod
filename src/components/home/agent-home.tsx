@@ -38,7 +38,7 @@ const sampleAgents = [
 // Update the component name
 export default function AgentHome() {
   const [isHovered, setIsHovered] = useState(false);
-  const [hasAgents, setHasAgents] = useState(true);
+  const [hasAgents, setHasAgents] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [agents, setAgents] = useState([]);
   const account = useActiveAccount();
@@ -81,6 +81,12 @@ export default function AgentHome() {
       setHasAgents(false);
     }
   };
+
+  useEffect(() => {
+    if (account?.address) {
+      getAllAgents();
+    }
+  }, [account?.address]);
 
   return (
     <div
