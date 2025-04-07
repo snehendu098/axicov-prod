@@ -26,7 +26,7 @@ export function GridBackground() {
       constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
-        this.size = Math.random() * 1.5 + 0.5;
+        this.size = Math.random() * 1.5 + 1.5;
         this.speedX = Math.random() * 0.5 - 0.25;
         this.speedY = Math.random() * 0.5 - 0.25;
         this.color = `rgba(225, 29, 72, ${Math.random() * 0.2 + 0.1})`; // Subtle rose particles

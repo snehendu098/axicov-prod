@@ -10,30 +10,6 @@ import { useActiveAccount } from "thirdweb/react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-const sampleAgents = [
-  {
-    id: 1,
-    name: "Research Assistant",
-    description:
-      "Helps with research tasks, finding information, and summarizing content.",
-    color: "from-blue-500 to-rose-500",
-  },
-  {
-    id: 2,
-    name: "Code Helper",
-    description:
-      "Assists with coding problems, debugging, and providing code examples.",
-    color: "from-amber-500 to-rose-500",
-  },
-  {
-    id: 3,
-    name: "Content Writer",
-    description:
-      "Creates and edits various types of content based on your requirements.",
-    color: "from-rose-500 to-pink-500",
-  },
-];
-
 export default function AgentHome() {
   const [isHovered, setIsHovered] = useState(false);
   const [hasAgents, setHasAgents] = useState(false);
@@ -65,6 +41,7 @@ export default function AgentHome() {
           );
           if (data.success) {
             setAgents(data.data);
+            console.log("Agents:", data.data);
             setHasAgents(data.data.length > 0);
           }
         },
@@ -140,7 +117,7 @@ export default function AgentHome() {
               <MinimalistAgentCard
                 key={agent._id}
                 id={agent._id}
-                name={agent.displyName}
+                name={agent.displayName}
                 description={agent.description}
               />
             ))}

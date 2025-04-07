@@ -8,15 +8,11 @@ interface AgentParams {
   id: string;
 }
 
-export async function GET(
-  req: Request,
-  _: Response,
-  { params }: { params: AgentParams }
-) {
+export async function GET(req: Request, { params }: { params: AgentParams }) {
   try {
     await dbConnect();
 
-    const { id } = params;
+    const { id } = await params;
 
     // Validate that the ID is a valid MongoDB ObjectId
     if (!isValidObjectId(id)) {

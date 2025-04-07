@@ -16,7 +16,9 @@ export async function POST(req: Request) {
   try {
     await dbConnect();
 
-    const agentData: AgentCreateRequest = await req.json();
+    const agentData = await req.json();
+
+    console.log(agentData);
 
     const requiredFields = [
       "displayName",
@@ -37,7 +39,7 @@ export async function POST(req: Request) {
     }
 
     const web3 = new Web3();
-    const account = web3.eth.accounts.create();
+    const account = await web3.eth.accounts.create();
 
     const newAgent = new Agent({
       displayName: agentData.displayName,

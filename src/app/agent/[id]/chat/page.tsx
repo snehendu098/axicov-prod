@@ -6,7 +6,11 @@ import { GridBackground } from "@/components/core/grid-background";
 import { Settings, Send } from "lucide-react";
 import Link from "next/link";
 import { AxicovAvatar } from "@/components/core/axicov-avatar";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useActiveAccount } from "thirdweb/react";
+import ChatLoading from "./loading";
 
 // Sample agent data - in a real app, you would fetch this from an API
 const agentData: any = {
@@ -37,10 +41,6 @@ type Message = {
 export default function AgentChatPage() {
   const params = useParams();
   const agentId = params.id as string;
-  const agent = agentData[agentId] || {
-    name: "Axicov AI",
-    description: "AI Assistant",
-  };
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
@@ -48,9 +48,50 @@ export default function AgentChatPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [mounted, setMounted] = useState(false);
+  const [agent, setAgent] = useState<any>();
+  const [loading, setLoading] = useState(false);
+  const account = useActiveAccount();
+  const router = useRouter();
+
+  async function fetchAgentData() {
+    setLoading(true);
+    toast.loading("Loading agent data...");
+    try {
+      const { data } = await axios.get(
+        `/api/agents/${agentId}?ownerWallet=${account?.address}`
+      );
+
+      console.log(data);
+
+      if (data.success) {
+        toast.dismiss();
+        toast.success("Agent data loaded successfully");
+        setAgent(data.data);
+      } else {
+        toast.dismiss();
+        toast.error(data.error);
+        router.push("/");
+      }
+    } catch (error: any) {
+      toast.dismiss();
+      toast.error("Failed to load agent data");
+      console.error("Error fetching agent data:", error);
+      router.push("/");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   // Simulate initial welcome message
   useEffect(() => {
+    if (!account?.address) {
+      router.push("/");
+    }
+
+    if (account?.address) {
+      fetchAgentData();
+    }
+
     setMounted(true);
   }, []);
 
@@ -87,8 +128,8 @@ export default function AgentChatPage() {
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: `I'm ${
-          agent.name
-        }, your AI assistant. I'm here to help with ${agent.description.toLowerCase()} How can I assist you today?`,
+          agent?.displayName || "Axicov Ai"
+        }, your AI assistant. I'm here to help with ${agent?.description.toLowerCase()} How can I assist you today?`,
         sender: "ai",
         timestamp: new Date(),
       };
@@ -105,7 +146,7 @@ export default function AgentChatPage() {
     }
   };
 
-  return (
+  return !loading ? (
     <div className="min-h-screen h-screen bg-[#121212] text-white flex flex-col relative overflow-hidden">
       {/* Grid Background */}
       <div className="absolute inset-0 z-0 opacity-50">
@@ -140,7 +181,9 @@ export default function AgentChatPage() {
             </Link>
             <div className="flex items-center space-x-2">
               <AxicovAvatar size="small" />
-              <span className="font-medium text-rose-400">{agent.name}</span>
+              <span className="font-medium text-rose-400">
+                {agent?.displayName || "Axicov Ai"}
+              </span>
             </div>
           </div>
 
@@ -165,7 +208,8 @@ export default function AgentChatPage() {
               Can I help you with anything?
             </h1>
             <p className="text-gray-400 text-center max-w-md text-sm">
-              I'm {agent.name}. {agent.description} Let's get started!
+              I'm {agent?.displayName || "Axicov Ai"}.{" "}
+              {agent?.description || ""} Let's get started!
             </p>
           </div>
         ) : (
@@ -261,5 +305,7 @@ export default function AgentChatPage() {
         </div>
       </div>
     </div>
+  ) : (
+    <ChatLoading />
   );
 }

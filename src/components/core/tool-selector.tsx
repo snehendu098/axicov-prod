@@ -6,49 +6,56 @@ import { Search, X, Plus, Check, PenToolIcon as Tool } from "lucide-react";
 // Define the tools array here so it can be imported by other components
 export const availableTools = [
   {
-    id: "web-search",
     name: "Web Search",
     description: "Search the web for real-time information",
     category: "search",
   },
   {
-    id: "code-interpreter",
     name: "Code Interpreter",
     description: "Execute code and analyze data",
     category: "development",
   },
   {
-    id: "image-generation",
     name: "Image Generation",
     description: "Generate images from text descriptions",
     category: "media",
   },
   {
-    id: "text-analysis",
     name: "Text Analysis",
     description: "Analyze text for sentiment, entities, and more",
     category: "analysis",
   },
   {
-    id: "data-visualization",
     name: "Data Visualization",
     description: "Create charts and graphs from data",
     category: "data",
   },
   {
-    id: "file-management",
     name: "File Management",
     description: "Upload, download, and manage files",
     category: "utility",
   },
   {
-    id: "translation",
     name: "Translation",
     description: "Translate text between languages",
     category: "communication",
   },
   {
-    id: "summarization",
+    name: "Summarization",
+    description: "Summarize long texts into concise points",
+    category: "analysis",
+  },
+  {
+    name: "File Management",
+    description: "Upload, download, and manage files",
+    category: "utility",
+  },
+  {
+    name: "Translation",
+    description: "Translate text between languages",
+    category: "communication",
+  },
+  {
     name: "Summarization",
     description: "Summarize long texts into concise points",
     category: "analysis",

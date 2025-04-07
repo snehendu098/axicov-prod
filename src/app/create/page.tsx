@@ -9,6 +9,9 @@ import { useRouter } from "next/navigation";
 import { AgentDetailsForm } from "@/components/create/agent-details-form";
 import { CreateNavigation } from "@/components/create/create-navigation";
 import { ToolSelector } from "@/components/core/tool-selector";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useActiveAccount } from "thirdweb/react";
 
 export default function CreateAgentPage() {
   const router = useRouter();
@@ -23,6 +26,8 @@ export default function CreateAgentPage() {
   const [showPreview, setShowPreview] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [animateIn, setAnimateIn] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const account = useActiveAccount();
 
   // Check form validity
   useEffect(() => {
@@ -35,6 +40,9 @@ export default function CreateAgentPage() {
 
   // Animate in on mount
   useEffect(() => {
+    if (!account?.address) {
+      router.push("/");
+    }
     setAnimateIn(true);
   }, []);
 
@@ -45,23 +53,10 @@ export default function CreateAgentPage() {
 ## Purpose
 This agent is designed to help users with research tasks and information gathering.
 
-### Capabilities
-- **Web Search**: Find relevant information online
-- **Data Analysis**: Process and analyze data sets
-- **Content Summarization**: Create concise summaries of long texts
-
-## Response Format
+## Response Formating
 When responding to queries, follow this structure:
 1. Acknowledge the question
 2. Provide a direct answer
-3. Include supporting details and sources
-
-\`\`\`
-Example response format:
-I understand you're asking about [topic].
-The answer is [concise response].
-According to [source], [additional details]...
-\`\`\`
 
 > Note: Always maintain a helpful and informative tone.`;
 
@@ -85,13 +80,39 @@ According to [source], [additional details]...
     setSelectedTools([]);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send the data to your backend
-    console.log({ ...formData, tools: selectedTools });
 
-    // Navigate back to the dashboard
-    router.push("/");
+    console.log({ ...formData, tools: selectedTools });
+    toast.loading("Creating agent...");
+    console.log(account?.address);
+    setLoading(true);
+
+    try {
+      const { data } = await axios.post(`/api/agents/create`, {
+        displayName: formData.name.toString(),
+        description: formData.description,
+        instructions: formData.systemMessage,
+        tools: selectedTools,
+        ownerWallet: account?.address.toString(),
+      });
+
+      if (data.success) {
+        toast.dismiss();
+        toast.success("Agent created successfully!");
+        router.push(`/agent/${data.data._id}/chat`);
+      } else {
+        toast.dismiss();
+        toast.error("Error creating agent");
+      }
+    } catch (error: any) {
+      console.log(error);
+      toast.dismiss();
+      toast.error(`Error creating agent: ${error.message}`);
+      return error;
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -250,7 +271,8 @@ According to [source], [additional details]...
 
                     <button
                       type="submit"
-                      className="px-8 py-3 bg-rose-500 text-white rounded-xl font-medium hover:bg-rose-600 transition-all duration-300 flex items-center"
+                      disabled={!isFormValid || loading}
+                      className="px-8 py-3 bg-rose-500 text-white disabled:bg-rose-500/50 disabled:text-gray-300 cursor-pointer disabled:cursor-default rounded-xl font-medium hover:bg-rose-600 transition-all duration-300 flex items-center"
                     >
                       <Sparkles className="mr-2 w-4 h-4" />
                       Create Agent
