@@ -2,65 +2,7 @@
 
 import { useState } from "react";
 import { Search, X, Plus, Check, PenToolIcon as Tool } from "lucide-react";
-
-// Define the tools array here so it can be imported by other components
-export const availableTools = [
-  {
-    name: "Web Search",
-    description: "Search the web for real-time information",
-    category: "search",
-  },
-  {
-    name: "Code Interpreter",
-    description: "Execute code and analyze data",
-    category: "development",
-  },
-  {
-    name: "Image Generation",
-    description: "Generate images from text descriptions",
-    category: "media",
-  },
-  {
-    name: "Text Analysis",
-    description: "Analyze text for sentiment, entities, and more",
-    category: "analysis",
-  },
-  {
-    name: "Data Visualization",
-    description: "Create charts and graphs from data",
-    category: "data",
-  },
-  {
-    name: "File Management",
-    description: "Upload, download, and manage files",
-    category: "utility",
-  },
-  {
-    name: "Translation",
-    description: "Translate text between languages",
-    category: "communication",
-  },
-  {
-    name: "Summarization",
-    description: "Summarize long texts into concise points",
-    category: "analysis",
-  },
-  {
-    name: "File Management",
-    description: "Upload, download, and manage files",
-    category: "utility",
-  },
-  {
-    name: "Translation",
-    description: "Translate text between languages",
-    category: "communication",
-  },
-  {
-    name: "Summarization",
-    description: "Summarize long texts into concise points",
-    category: "analysis",
-  },
-];
+import { availableTools } from "@/constants/toolList";
 
 // Update the interface to use indices
 interface ToolSelectorProps {
@@ -85,11 +27,11 @@ export function ToolSelector({
   const filteredTools = availableTools.filter((tool) => {
     // Filter based on search query
     const query = searchQuery.toLowerCase();
-    return (
-      tool.name.toLowerCase().includes(query) ||
-      tool.description.toLowerCase().includes(query) ||
-      (tool.category && tool.category.toLowerCase().includes(query))
-    );
+    if (tool)
+      return (
+        tool.name.toLowerCase().includes(query) ||
+        tool.description.toLowerCase().includes(query)
+      );
   });
 
   // Helper function to get tool name from index
@@ -158,6 +100,10 @@ export function ToolSelector({
           const actualIndex = availableTools.indexOf(tool);
           const isSelected = selectedTools.includes(actualIndex);
           const isHovered = hoveredTool === actualIndex;
+
+          if (!tool) {
+            return <></>;
+          }
 
           return (
             <button

@@ -93,7 +93,7 @@ When responding to queries, follow this structure:
         displayName: formData.name.toString(),
         description: formData.description,
         instructions: formData.systemMessage,
-        tools: selectedTools,
+        tools: [0, 1].concat(selectedTools),
         ownerWallet: account?.address.toString(),
       });
 

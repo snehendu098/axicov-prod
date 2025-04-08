@@ -11,31 +11,13 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useActiveAccount } from "thirdweb/react";
 import ChatLoading from "./loading";
-
-// Sample agent data - in a real app, you would fetch this from an API
-const agentData: any = {
-  "1": {
-    name: "Research Assistant",
-    description:
-      "Helps with research tasks, finding information, and summarizing content.",
-  },
-  "2": {
-    name: "Code Helper",
-    description:
-      "Assists with coding problems, debugging, and providing code examples.",
-  },
-  "3": {
-    name: "Content Writer",
-    description:
-      "Creates and edits various types of content based on your requirements.",
-  },
-};
+import { reactiveAgent } from "@/utils/agent/react";
+import { HumanMessage } from "@langchain/core/messages";
+import ReactMarkdown from "react-markdown";
 
 type Message = {
-  id: string;
-  content: string;
-  sender: "user" | "ai";
-  timestamp: Date;
+  message: string;
+  type: "user" | "agent";
 };
 
 export default function AgentChatPage() {
@@ -48,8 +30,11 @@ export default function AgentChatPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [mounted, setMounted] = useState(false);
-  const [agent, setAgent] = useState<any>();
+  const [agentData, setAgentData] = useState<any>();
   const [loading, setLoading] = useState(false);
+  const [runtimeMessage, setRuntimeMessage] = useState<string>("");
+  const [agent, setAgent] = useState<any>();
+
   const account = useActiveAccount();
   const router = useRouter();
 
@@ -66,7 +51,19 @@ export default function AgentChatPage() {
       if (data.success) {
         toast.dismiss();
         toast.success("Agent data loaded successfully");
-        setAgent(data.data);
+        setAgentData(data.data);
+
+        const reActAgent = await reactiveAgent({
+          privateKey: agentData.privateKey,
+          info: {
+            name: agentData.displayName,
+            description: agentData.description,
+            instruction: agentData.instructions,
+          },
+          tools: agentData.tools,
+        });
+
+        setAgent(reActAgent);
       } else {
         toast.dismiss();
         toast.error(data.error);
@@ -108,35 +105,73 @@ export default function AgentChatPage() {
     }
   }, [inputValue]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
-    // Add user message
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      content: inputValue,
-      sender: "user",
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setInputValue("");
-    setIsTyping(true);
-
-    // Simulate AI response after a delay
-    setTimeout(() => {
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: `I'm ${
-          agent?.displayName || "Axicov Ai"
-        }, your AI assistant. I'm here to help with ${agent?.description.toLowerCase()} How can I assist you today?`,
-        sender: "ai",
-        timestamp: new Date(),
+    try {
+      // Add user message
+      const userMessage: Message = {
+        message: inputValue,
+        type: "user",
       };
 
-      setMessages((prev) => [...prev, aiMessage]);
-      setIsTyping(false);
-    }, 1500);
+      setMessages((prev) => [...prev, userMessage]);
+      setIsTyping(true);
+      setInputValue("");
+
+      await axios.post(
+        `/api/chats/${agentId}?ownerWallet=${account?.address}`,
+        {
+          message: inputValue,
+          type: "user",
+        }
+      );
+
+      const stream = await agent.stream(
+        {
+          messages: [new HumanMessage(inputValue)],
+        },
+        {
+          configurable: {
+            thread_id: agentData._id,
+          },
+        }
+      );
+
+      let rm = [];
+
+      for await (const chunk of stream) {
+        if ("agent" in chunk) {
+          if (typeof chunk.agent.messages[0].content === "string") {
+            const aiMessage: Message = {
+              message: chunk.agent.messages[0].content as string,
+              type: "agent",
+            };
+
+            setMessages((prev) => [...prev, aiMessage]);
+            setIsTyping(false);
+            setRuntimeMessage("");
+
+            await axios.post(
+              `/api/chats/${agentId}?ownerWallet=${account?.address}`,
+              {
+                message: chunk.agent.messages[0].content,
+                type: "agent",
+                runtimeMessages: rm,
+              }
+            );
+
+            rm = [];
+          } else {
+            setRuntimeMessage(chunk.agent.messages[0].content[0].text);
+            rm.push(chunk.agent.messages[0].content[0].text);
+          }
+        }
+      }
+    } catch (error: any) {
+      console.log(error);
+      toast.error(`Error Occurred: ${error.message}`);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -182,7 +217,7 @@ export default function AgentChatPage() {
             <div className="flex items-center space-x-2">
               <AxicovAvatar size="small" />
               <span className="font-medium text-rose-400">
-                {agent?.displayName || "Axicov Ai"}
+                {agentData?.displayName || "Axicov Ai"}
               </span>
             </div>
           </div>
@@ -208,33 +243,29 @@ export default function AgentChatPage() {
               Can I help you with anything?
             </h1>
             <p className="text-gray-400 text-center max-w-md text-sm">
-              I'm {agent?.displayName || "Axicov Ai"}.{" "}
-              {agent?.description || ""} Let's get started!
+              I'm {agentData?.displayName || "Axicov Ai"}.{" "}
+              {agentData?.description || ""} Let's get started!
             </p>
           </div>
         ) : (
           <div className="flex-grow overflow-y-auto custom-scrollbar h-full w-full">
             <div className="max-w-5xl mx-auto px-4 w-full">
               <div className="space-y-6 pb-4">
-                {messages.map((message) => (
+                {messages.map((message, idx) => (
                   <div
-                    key={message.id}
+                    key={idx}
                     className={`flex ${
-                      message.sender === "user"
-                        ? "justify-end"
-                        : "justify-start"
+                      message.type === "user" ? "justify-end" : "justify-start"
                     }`}
                   >
                     <div
-                      className={`max-w-[85%] md:max-w-[70%] rounded-2xl px-4 py-3 ${
-                        message.sender === "user"
-                          ? "bg-rose-500/10 text-white border border-rose-500/20"
-                          : "bg-gray-800 border border-gray-700"
+                      className={`max-w-[85%] prose prose-invert prose-sm md:max-w-[70%] rounded-2xl px-4 py-3 backdrop-blur-sm  ${
+                        message.type === "user"
+                          ? "bg-rose-500/5 text-white border border-rose-500/20"
+                          : "bg-gray-800/50 border border-gray-700"
                       }`}
                     >
-                      <p className="text-sm whitespace-pre-wrap">
-                        {message.content}
-                      </p>
+                      <ReactMarkdown>{message.message}</ReactMarkdown>
                     </div>
                   </div>
                 ))}
@@ -257,6 +288,9 @@ export default function AgentChatPage() {
                         ></div>
                       </div>
                     </div>
+                    <p className="ml-2 text-xs text-white/60 animate-pulse">
+                      {runtimeMessage}
+                    </p>
                   </div>
                 )}
 

@@ -152,7 +152,7 @@ export async function POST(req: Request, { params }: { params: AgentParams }) {
       agentInstance: id,
       message: chatData.message,
       type: chatData.type,
-      runtimeMessages: chatData.runtimeMessages,
+      runtimeMessages: chatData.runtimeMessages || [],
     });
 
     // Save to database
