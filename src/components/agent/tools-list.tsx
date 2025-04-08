@@ -1,38 +1,39 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Edit3, Save, X, PenToolIcon as Tool } from "lucide-react"
-import { ToolSelector, availableTools } from "@/components/core/tool-selector"
+import { useState } from "react";
+import { Edit3, Save, X, PenToolIcon as Tool } from "lucide-react";
+import { ToolSelector } from "@/components/core/tool-selector";
+import { availableTools } from "@/constants/toolList";
 
 interface ToolsListProps {
-  tools: number[] // Changed from string[] to number[]
-  onSaveTools: (tools: number[]) => void // Changed from tools: string[] to tools: number[]
+  tools: number[]; // Changed from string[] to number[]
+  onSaveTools: (tools: number[]) => void; // Changed from tools: string[] to tools: number[]
 }
 
 export function ToolsList({ tools, onSaveTools }: ToolsListProps) {
-  const [editingTools, setEditingTools] = useState(false)
-  const [editedTools, setEditedTools] = useState<number[]>(tools)
+  const [editingTools, setEditingTools] = useState(false);
+  const [editedTools, setEditedTools] = useState<number[]>(tools);
 
   const handleSaveTools = () => {
-    onSaveTools(editedTools)
-    setEditingTools(false)
-  }
+    onSaveTools(editedTools);
+    setEditingTools(false);
+  };
 
   const handleAddTool = (toolIndex: number) => {
     if (!editedTools.includes(toolIndex)) {
-      setEditedTools((prev) => [...prev, toolIndex])
+      setEditedTools((prev) => [...prev, toolIndex]);
     }
-  }
+  };
 
   const handleRemoveTool = (toolIndex: number) => {
-    setEditedTools((prev) => prev.filter((idx) => idx !== toolIndex))
-  }
+    setEditedTools((prev) => prev.filter((idx) => idx !== toolIndex));
+  };
 
   // Helper function to get tool name from index
   const getToolName = (toolIndex: number) => {
-    const tool = availableTools[toolIndex]
-    return tool ? tool.name : `Tool ${toolIndex}`
-  }
+    const tool = availableTools[toolIndex];
+    return tool ? tool.name : `Tool ${toolIndex}`;
+  };
 
   return (
     <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] overflow-hidden hover:border-rose-500/30 transition-all duration-300">
@@ -50,8 +51,8 @@ export function ToolsList({ tools, onSaveTools }: ToolsListProps) {
           <div className="flex gap-2">
             <button
               onClick={() => {
-                setEditingTools(false)
-                setEditedTools([...tools])
+                setEditingTools(false);
+                setEditedTools([...tools]);
               }}
               className="text-xs flex items-center gap-1.5 text-gray-400 hover:text-red-400 transition-colors bg-[#252525] hover:bg-[#2a2a2a] px-3 py-1.5 rounded-lg border border-[#2a2a2a]"
             >
@@ -86,7 +87,10 @@ export function ToolsList({ tools, onSaveTools }: ToolsListProps) {
                 key={toolIndex}
                 className="px-4 py-2 bg-[#252525] text-rose-400 rounded-xl text-sm flex items-center border border-[#2a2a2a] hover:border-rose-500/30 transition-all duration-300 group"
               >
-                <Tool size={14} className="mr-2 group-hover:scale-110 transition-transform duration-300" />
+                <Tool
+                  size={14}
+                  className="mr-2 group-hover:scale-110 transition-transform duration-300"
+                />
                 {getToolName(toolIndex)}
               </div>
             ))}
@@ -94,6 +98,5 @@ export function ToolsList({ tools, onSaveTools }: ToolsListProps) {
         )}
       </div>
     </div>
-  )
+  );
 }
-

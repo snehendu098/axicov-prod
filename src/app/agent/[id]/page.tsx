@@ -70,7 +70,7 @@ const agentData: any = {
 export default function AgentInfoPage() {
   const params = useParams();
   const agentId = params.id as string;
-  const [agent, setAgent] = useState(agentData[agentId]);
+  const [agent, setAgent] = useState(agentData["1"]);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

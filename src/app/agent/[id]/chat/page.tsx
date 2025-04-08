@@ -43,7 +43,7 @@ export default function AgentChatPage() {
     toast.loading("Loading agent data...");
     try {
       const { data } = await axios.get(
-        `/api/agents/${agentId}?ownerWallet=${account?.address}`
+        `/api/chats/${agentId}?ownerWallet=${account?.address}`
       );
 
       console.log(data);
@@ -51,19 +51,23 @@ export default function AgentChatPage() {
       if (data.success) {
         toast.dismiss();
         toast.success("Agent data loaded successfully");
-        setAgentData(data.data);
+
+        const { agent, chats } = data.data;
+
+        setAgentData(agent);
 
         const reActAgent = await reactiveAgent({
-          privateKey: agentData.privateKey,
+          privateKey: agent.privateKey,
           info: {
-            name: agentData.displayName,
-            description: agentData.description,
-            instruction: agentData.instructions,
+            name: agent.displayName,
+            description: agent.description,
+            instruction: agent.instructions,
           },
-          tools: agentData.tools,
+          tools: agent.tools,
         });
 
         setAgent(reActAgent);
+        setMessages(chats);
       } else {
         toast.dismiss();
         toast.error(data.error);
@@ -76,6 +80,21 @@ export default function AgentChatPage() {
       router.push("/");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function fetchMessages() {
+    try {
+      const { data } = await axios.get(
+        `/api/chats/${agentId}?ownerWallet=${account?.address}`
+      );
+
+      if (data.success) {
+        setMessages(data.data);
+      }
+    } catch (err: any) {
+      console.log(err);
+      toast.error(err.message);
     }
   }
 
@@ -222,9 +241,9 @@ export default function AgentChatPage() {
             </div>
           </div>
 
-          <button className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-800 hover:bg-gray-700 transition-colors">
+          {/* <button className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-800 hover:bg-gray-700 transition-colors">
             <Settings size={16} className="text-gray-400" />
-          </button>
+          </button> */}
         </div>
       </header>
 
