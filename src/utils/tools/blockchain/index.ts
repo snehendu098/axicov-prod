@@ -1,3 +1,4 @@
+import { updateMessageFromAnywhere } from "@/components/providers/message-provider";
 import { Agent } from "@/utils/agent";
 
 export const getBalance = async (agent: Agent, address?: string) => {
@@ -27,6 +28,7 @@ export const deployToken = async (
     });
 
     const tokenContract = await agent.sdk.getContract(deployedAddress, "token");
+
     const mintTxn = await tokenContract.mintTo(
       agent.account.address,
       tokenSupply

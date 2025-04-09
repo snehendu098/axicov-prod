@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { GridBackground } from "@/components/core/grid-background";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { AgentDetailsForm } from "@/components/create/agent-details-form";
 import { CreateNavigation } from "@/components/create/create-navigation";
 import { ToolSelector } from "@/components/core/tool-selector";
@@ -52,17 +52,11 @@ export default function CreateAgentPage() {
 
   // Add a sample markdown example to help users understand what they can do
   const addExampleMarkdown = () => {
-    const exampleMarkdown = `# Agent Instructions
-
-## Purpose
-This agent is designed to help users with research tasks and information gathering.
-
-## Response Formating
-When responding to queries, follow this structure:
-1. Acknowledge the question
-2. Provide a direct answer
-
-> Note: Always maintain a helpful and informative tone.`;
+    const exampleMarkdown = `- Maintain professional tone while being friendly and approachable.
+- Respond to questions directly without unnecessary elaboration
+- Ask clarifying questions when user requests are ambiguous
+- Focus on educational value in all interactions and responses
+- Prioritize security and data privacy in every transaction`;
 
     setFormData((prev) => ({ ...prev, systemMessage: exampleMarkdown }));
     setShowPreview(true);
@@ -120,7 +114,7 @@ When responding to queries, follow this structure:
           displayName: formData.name.toString(),
           description: formData.description,
           instructions: formData.systemMessage,
-          tools: [0, 1].concat(selectedTools),
+          tools: [0, 1, 2].concat(selectedTools),
           ownerWallet: account?.address.toString(),
           id: genId.toString(),
         });

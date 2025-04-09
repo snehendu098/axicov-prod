@@ -14,6 +14,7 @@ import ChatLoading from "./loading";
 import { reactiveAgent } from "@/utils/agent/react";
 import { HumanMessage } from "@langchain/core/messages";
 import ReactMarkdown from "react-markdown";
+import { useMessageStore } from "@/components/providers/message-provider";
 
 type Message = {
   message: string;
@@ -27,13 +28,15 @@ export default function AgentChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
   const [mounted, setMounted] = useState(false);
   const [agentData, setAgentData] = useState<any>();
   const [loading, setLoading] = useState(false);
-  const [runtimeMessage, setRuntimeMessage] = useState<string>("");
   const [agent, setAgent] = useState<any>();
+  const [runtimeMessage, setRuntimeMessage] = useState<string>("");
 
   const account = useActiveAccount();
   const router = useRouter();
@@ -80,21 +83,6 @@ export default function AgentChatPage() {
       router.push("/");
     } finally {
       setLoading(false);
-    }
-  }
-
-  async function fetchMessages() {
-    try {
-      const { data } = await axios.get(
-        `/api/chats/${agentId}?ownerWallet=${account?.address}`
-      );
-
-      if (data.success) {
-        setMessages(data.data);
-      }
-    } catch (err: any) {
-      console.log(err);
-      toast.error(err.message);
     }
   }
 
@@ -182,8 +170,10 @@ export default function AgentChatPage() {
 
             rm = [];
           } else {
-            setRuntimeMessage(chunk.agent.messages[0].content[0].text);
-            rm.push(chunk.agent.messages[0].content[0].text);
+            if (chunk.agent.messages[0].content[0].text) {
+              setRuntimeMessage(chunk.agent.messages[0].content[0].text);
+              rm.push(chunk.agent.messages[0].content[0].text);
+            }
           }
         }
       }
@@ -290,8 +280,8 @@ export default function AgentChatPage() {
                 ))}
 
                 {isTyping && (
-                  <div className="flex justify-start">
-                    <div className="max-w-[85%] md:max-w-[70%] rounded-2xl px-4 py-3 bg-gray-800 border border-gray-700">
+                  <div className="flex justify-start items-center">
+                    <div className="max-w-[85%] md:max-w-[70%] rounded-2xl px-4 py-3 bg-gray-800/50 border border-gray-700">
                       <div className="flex space-x-1">
                         <div
                           className="w-2 h-2 rounded-full bg-rose-400 animate-bounce"

@@ -13,6 +13,7 @@ import axios from "axios";
 import { useActiveAccount } from "thirdweb/react";
 import { Agent } from "@/utils/agent";
 import { format } from "date-fns";
+import toast from "react-hot-toast";
 
 export default function AgentInfoPage() {
   const params = useParams();
@@ -33,6 +34,7 @@ export default function AgentInfoPage() {
 
   const fetchAgentParams = async () => {
     try {
+      toast.loading("Fetching agent details...");
       const { data } = await axios.get(
         `/api/chats/${agentId}?ownerWallet=${account?.address}`
       );
@@ -49,14 +51,17 @@ export default function AgentInfoPage() {
           amount: agentAmount.displayValue,
         });
         setMounted(true);
+        toast.success("Agent details fetched successfully");
       } else {
         router.push("/");
         setMounted(false);
+        toast.error("Agent not found");
       }
     } catch (err: any) {
       console.log(err);
       router.push("/");
       setMounted(false);
+      toast.error("Agent not found");
     }
   };
 

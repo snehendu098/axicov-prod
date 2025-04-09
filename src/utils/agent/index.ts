@@ -1,5 +1,4 @@
 import { client } from "@/lib/client";
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { Account, privateKeyToAccount } from "thirdweb/wallets";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { Chain, defineChain } from "thirdweb";
@@ -9,6 +8,7 @@ import {
   getTokenInfo,
   transferToken,
 } from "../tools/blockchain";
+import { generateQuiz, getBooks, searchJobs } from "../tools/edu";
 
 export class Agent {
   privateKey: string;
@@ -44,5 +44,17 @@ export class Agent {
 
   deployToken(tokenName: string, tokenSymbol: string, tokenSupply: number) {
     return deployToken(this, tokenName, tokenSymbol, tokenSupply);
+  }
+
+  searchJobs(keywords: string) {
+    return searchJobs(keywords);
+  }
+
+  getBookRecommendations(keywords: string) {
+    return getBooks(keywords);
+  }
+
+  generateCurrentAffairsQuiz() {
+    return generateQuiz();
   }
 }

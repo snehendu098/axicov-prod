@@ -6,6 +6,11 @@ import {
   TokenTransferTool,
 } from "./blockchain/tool";
 import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
+import {
+  GenerateCurrentAffairsQuiz,
+  GetBookRecommendations,
+  SearchJobs,
+} from "./edu/tool";
 
 export const createEDUTools = (agent: Agent) => {
   const tools = [
@@ -17,6 +22,9 @@ export const createEDUTools = (agent: Agent) => {
     }),
     new TokenTransferTool(agent),
     new CreateTokenTool(agent),
+    new SearchJobs(agent),
+    new GetBookRecommendations(agent),
+    new GenerateCurrentAffairsQuiz(agent),
   ];
 
   return tools;
