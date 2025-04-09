@@ -10,7 +10,7 @@ export const searchJobs = async (keywords: string) => {
       sort: "mostRelevant",
     },
     headers: {
-      "x-rapidapi-key": "cbb05f142fmsh1f86fd2c613b03ap172139jsn5ed48da4bff4",
+      "x-rapidapi-key": process.env.NEXT_PUBLIC_RAPID_API_KEY!,
       "x-rapidapi-host": "linkedin-data-api.p.rapidapi.com",
     },
   };
@@ -18,7 +18,7 @@ export const searchJobs = async (keywords: string) => {
   try {
     const { data } = await axios.request(options);
     if (data.success) {
-      return data;
+      return data.data;
     }
   } catch (error) {
     console.error(error);
