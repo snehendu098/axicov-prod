@@ -15,6 +15,7 @@ keywords: string, eg "blockchain" (required)
 **IMPORTANT INSTRUCTIONS**:
 - If you can't find any job keywords for the user's request, ask the user for providing job keywords so that you can find them
 - Don't separate the keywords using ',', ';' or anything other than just a whitespace
+- ALWAYS make sure that keywords are always 1 word and in lowercase
 
 **EXAMPLES**
 User: Find me some jobs
