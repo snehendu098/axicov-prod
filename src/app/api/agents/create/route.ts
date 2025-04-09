@@ -3,6 +3,7 @@ import { Agent } from "@/models/agent.model";
 import { dbConnect } from "@/lib/db";
 import { ApiResponse } from "@/interfaces";
 import Web3 from "web3";
+import mongoose from "mongoose";
 
 interface AgentCreateRequest {
   displayName: string;
@@ -10,6 +11,7 @@ interface AgentCreateRequest {
   instructions: string;
   tools: number[];
   ownerWallet: string;
+  id: string;
 }
 
 export async function POST(req: Request) {
@@ -42,6 +44,7 @@ export async function POST(req: Request) {
     const account = await web3.eth.accounts.create();
 
     const newAgent = new Agent({
+      _id: new mongoose.Types.ObjectId(agentData.id),
       displayName: agentData.displayName,
       description: agentData.description,
       instructions: agentData.instructions,

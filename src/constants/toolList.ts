@@ -10,7 +10,7 @@ const tempAgent = new Agent(tempAcc.privateKey);
 const tools = createEDUTools(tempAgent);
 
 export const availableTools = tools.map((item, idx) => {
-  if (idx > 1) {
+  if (idx > 2) {
     return {
       name: item.name
         .split("_")

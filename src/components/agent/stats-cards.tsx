@@ -1,8 +1,8 @@
-import { Wallet, PenToolIcon as Tool } from "lucide-react"
+import { Wallet, PenToolIcon as Tool } from "lucide-react";
 
 interface StatsCardsProps {
-  funds: string
-  toolsCount: number
+  funds: string;
+  toolsCount: number;
 }
 
 export function StatsCards({ funds, toolsCount }: StatsCardsProps) {
@@ -16,7 +16,7 @@ export function StatsCards({ funds, toolsCount }: StatsCardsProps) {
           </div>
           <span className="text-sm text-gray-400 font-medium">Total funds</span>
         </div>
-        <div className="text-2xl font-bold text-white">${funds}</div>
+        <div className="text-2xl font-bold text-white">{funds} EDU</div>
       </div>
 
       {/* Tools Count */}
@@ -30,6 +30,5 @@ export function StatsCards({ funds, toolsCount }: StatsCardsProps) {
         <div className="text-2xl font-bold text-white">{toolsCount}</div>
       </div>
     </div>
-  )
+  );
 }
-

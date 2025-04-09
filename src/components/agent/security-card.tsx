@@ -1,28 +1,40 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Shield, Key, Clock, Copy, CheckCircle } from "lucide-react"
+import { useState } from "react";
+import { Shield, Key, Clock, Copy, CheckCircle } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface SecurityCardProps {
-  publicKey: string
-  privateKey: string
-  createdOn: string
+  publicKey: string;
+  privateKey: string;
+  createdOn: string;
 }
 
-export function SecurityCard({ publicKey, privateKey, createdOn }: SecurityCardProps) {
-  const [copiedPublic, setCopiedPublic] = useState(false)
-  const [copiedPrivate, setCopiedPrivate] = useState(false)
+export function SecurityCard({
+  publicKey,
+  privateKey,
+  createdOn,
+}: SecurityCardProps) {
+  const [copiedPublic, setCopiedPublic] = useState(false);
+  const [copiedPrivate, setCopiedPrivate] = useState(false);
 
   const copyToClipboard = (text: string, type: "public" | "private") => {
-    navigator.clipboard.writeText(text)
+    navigator.clipboard.writeText(text);
     if (type === "public") {
-      setCopiedPublic(true)
-      setTimeout(() => setCopiedPublic(false), 2000)
+      toast.success("Public key copied to clipboard");
+      setCopiedPublic(true);
+      setTimeout(() => setCopiedPublic(false), 2000);
     } else {
-      setCopiedPrivate(true)
-      setTimeout(() => setCopiedPrivate(false), 2000)
+      toast.success("Private key copied to clipboard");
+      setCopiedPrivate(true);
+      setTimeout(() => setCopiedPrivate(false), 2000);
     }
-  }
+  };
+
+  const shortenAddress = (address: string) =>
+    address && typeof address === "string" && address.length > 6
+      ? `${address.substring(0, 4)}....${address.substring(address.length - 3)}`
+      : address;
 
   return (
     <div className="bg-[#1a1a1a] rounded-xl border border-[#2a2a2a] overflow-hidden hover:border-rose-500/30 transition-all duration-300">
@@ -39,14 +51,17 @@ export function SecurityCard({ publicKey, privateKey, createdOn }: SecurityCardP
       <div className="p-5 space-y-4">
         <div className="flex justify-between items-center group">
           <div className="flex items-center">
-            <Key size={16} className="text-gray-500 mr-3 group-hover:text-rose-400 transition-colors duration-300" />
+            <Key
+              size={16}
+              className="text-gray-500 mr-3 group-hover:text-rose-400 transition-colors duration-300"
+            />
             <div className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
               Public Key
             </div>
           </div>
           <div className="flex items-center">
             <span className="text-sm font-mono bg-[#252525] px-3 py-1.5 rounded-lg mr-2 border border-[#2a2a2a]">
-              {publicKey}
+              {shortenAddress(publicKey)}
             </span>
             <button
               onClick={() => copyToClipboard(publicKey, "public")}
@@ -63,14 +78,17 @@ export function SecurityCard({ publicKey, privateKey, createdOn }: SecurityCardP
 
         <div className="flex justify-between items-center group">
           <div className="flex items-center">
-            <Key size={16} className="text-gray-500 mr-3 group-hover:text-rose-400 transition-colors duration-300" />
+            <Key
+              size={16}
+              className="text-gray-500 mr-3 group-hover:text-rose-400 transition-colors duration-300"
+            />
             <div className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
               Private Key
             </div>
           </div>
           <div className="flex items-center">
             <span className="text-sm font-mono bg-[#252525] px-3 py-1.5 rounded-lg mr-2 border border-[#2a2a2a]">
-              {privateKey}
+              {shortenAddress(privateKey)}
             </span>
             <button
               onClick={() => copyToClipboard(privateKey, "private")}
@@ -87,15 +105,19 @@ export function SecurityCard({ publicKey, privateKey, createdOn }: SecurityCardP
 
         <div className="flex justify-between items-center group">
           <div className="flex items-center">
-            <Clock size={16} className="text-gray-500 mr-3 group-hover:text-rose-400 transition-colors duration-300" />
+            <Clock
+              size={16}
+              className="text-gray-500 mr-3 group-hover:text-rose-400 transition-colors duration-300"
+            />
             <div className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
               Created on
             </div>
           </div>
-          <div className="text-sm bg-[#252525] px-3 py-1.5 rounded-lg border border-[#2a2a2a]">{createdOn}</div>
+          <div className="text-sm bg-[#252525] px-3 py-1.5 rounded-lg border border-[#2a2a2a]">
+            {createdOn}
+          </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
-

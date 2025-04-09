@@ -31,7 +31,7 @@ export function ToolsList({ tools, onSaveTools }: ToolsListProps) {
 
   // Helper function to get tool name from index
   const getToolName = (toolIndex: number) => {
-    if (toolIndex > 1) {
+    if (toolIndex > 2) {
       const tool = availableTools[toolIndex];
       return tool ? tool?.name : `Tool ${toolIndex}`;
     }
@@ -76,7 +76,7 @@ export function ToolsList({ tools, onSaveTools }: ToolsListProps) {
         {editingTools ? (
           // Edit mode - use the core ToolSelector component
           <ToolSelector
-            selectedTools={editedTools.filter((item) => item > 1)}
+            selectedTools={editedTools.filter((item) => item > 2)}
             onAddTool={handleAddTool}
             onRemoveTool={handleRemoveTool}
             compact={true}
@@ -86,7 +86,7 @@ export function ToolsList({ tools, onSaveTools }: ToolsListProps) {
           <div className="flex flex-wrap gap-3">
             {tools.map(
               (toolIndex) =>
-                toolIndex > 1 && (
+                toolIndex > 2 && (
                   <div
                     key={toolIndex}
                     className="px-4 py-2 bg-[#252525] text-rose-400 rounded-xl text-sm flex items-center border border-[#2a2a2a] hover:border-rose-500/30 transition-all duration-300 group"

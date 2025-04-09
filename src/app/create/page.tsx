@@ -5,13 +5,16 @@ import { useState, useEffect } from "react";
 import { GridBackground } from "@/components/core/grid-background";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { AgentDetailsForm } from "@/components/create/agent-details-form";
 import { CreateNavigation } from "@/components/create/create-navigation";
 import { ToolSelector } from "@/components/core/tool-selector";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useActiveAccount } from "thirdweb/react";
+import mongoose from "mongoose";
+import { prepareContractCall, sendTransaction, toWei } from "thirdweb";
+import { contract } from "@/lib/client";
 
 export default function CreateAgentPage() {
   const router = useRouter();
@@ -27,6 +30,7 @@ export default function CreateAgentPage() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [animateIn, setAnimateIn] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const account = useActiveAccount();
 
   // Check form validity
@@ -87,23 +91,50 @@ When responding to queries, follow this structure:
     toast.loading("Creating agent...");
     console.log(account?.address);
     setLoading(true);
+    const genId = new mongoose.Types.ObjectId();
 
     try {
-      const { data } = await axios.post(`/api/agents/create`, {
-        displayName: formData.name.toString(),
-        description: formData.description,
-        instructions: formData.systemMessage,
-        tools: [0, 1].concat(selectedTools),
-        ownerWallet: account?.address.toString(),
+      if (!account?.address) {
+        router.push("/");
+        toast.error("Please connect your wallet");
+        return;
+      }
+
+      const transaction = await prepareContractCall({
+        contract,
+        method:
+          "function createAgent(string mongoDbId, string metadata) payable returns (uint256)",
+        params: [
+          genId.toString(),
+          JSON.stringify({ name: formData.name, owner: account?.address }),
+        ],
+        value: toWei("0.01"), // 0.01 ETH
+      });
+      const { transactionHash } = await sendTransaction({
+        transaction,
+        account,
       });
 
-      if (data.success) {
-        toast.dismiss();
-        toast.success("Agent created successfully!");
-        router.push(`/agent/${data.data._id}/chat`);
+      if (transactionHash) {
+        const { data } = await axios.post(`/api/agents/create`, {
+          displayName: formData.name.toString(),
+          description: formData.description,
+          instructions: formData.systemMessage,
+          tools: [0, 1].concat(selectedTools),
+          ownerWallet: account?.address.toString(),
+          id: genId.toString(),
+        });
+
+        if (data.success) {
+          toast.dismiss();
+          toast.success("Agent created successfully!");
+          router.push(`/agent/${data.data._id}/chat`);
+        } else {
+          toast.dismiss();
+          toast.error("Error creating agent");
+        }
       } else {
-        toast.dismiss();
-        toast.error("Error creating agent");
+        toast.error("Transaction Couldn't be processed");
       }
     } catch (error: any) {
       console.log(error);
