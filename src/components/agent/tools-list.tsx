@@ -31,8 +31,10 @@ export function ToolsList({ tools, onSaveTools }: ToolsListProps) {
 
   // Helper function to get tool name from index
   const getToolName = (toolIndex: number) => {
-    const tool = availableTools[toolIndex];
-    return tool ? tool.name : `Tool ${toolIndex}`;
+    if (toolIndex > 1) {
+      const tool = availableTools[toolIndex];
+      return tool ? tool?.name : `Tool ${toolIndex}`;
+    }
   };
 
   return (
@@ -74,7 +76,7 @@ export function ToolsList({ tools, onSaveTools }: ToolsListProps) {
         {editingTools ? (
           // Edit mode - use the core ToolSelector component
           <ToolSelector
-            selectedTools={editedTools}
+            selectedTools={editedTools.filter((item) => item > 1)}
             onAddTool={handleAddTool}
             onRemoveTool={handleRemoveTool}
             compact={true}
@@ -82,18 +84,21 @@ export function ToolsList({ tools, onSaveTools }: ToolsListProps) {
         ) : (
           // Display mode - just show the tools with premium styling
           <div className="flex flex-wrap gap-3">
-            {tools.map((toolIndex) => (
-              <div
-                key={toolIndex}
-                className="px-4 py-2 bg-[#252525] text-rose-400 rounded-xl text-sm flex items-center border border-[#2a2a2a] hover:border-rose-500/30 transition-all duration-300 group"
-              >
-                <Tool
-                  size={14}
-                  className="mr-2 group-hover:scale-110 transition-transform duration-300"
-                />
-                {getToolName(toolIndex)}
-              </div>
-            ))}
+            {tools.map(
+              (toolIndex) =>
+                toolIndex > 1 && (
+                  <div
+                    key={toolIndex}
+                    className="px-4 py-2 bg-[#252525] text-rose-400 rounded-xl text-sm flex items-center border border-[#2a2a2a] hover:border-rose-500/30 transition-all duration-300 group"
+                  >
+                    <Tool
+                      size={14}
+                      className="mr-2 group-hover:scale-110 transition-transform duration-300"
+                    />
+                    {getToolName(toolIndex)}
+                  </div>
+                )
+            )}
           </div>
         )}
       </div>

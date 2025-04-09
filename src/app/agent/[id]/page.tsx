@@ -23,7 +23,7 @@ const agentData: any = {
       "# Research Assistant\n\n## Purpose\nThis agent is designed to help users with research tasks and information gathering.\n\n## Capabilities\n- Search the web for real-time information\n- Analyze data and create visualizations\n- Summarize content from various sources\n\n## Usage Guidelines\nWhen asking for research, try to be specific about:\n1. The topic you're researching\n2. The depth of information needed\n3. Any specific sources you prefer\n\n> Note: This agent works best with clear, focused research questions.",
     createdOn: "12 Feb 2024",
     funds: "669,696.59",
-    tools: [0, 4, 7], // Changed from ["web-search", "data-visualization", "summarization"] to indices
+    tools: [0, 2, 3], // Changed from ["web-search", "data-visualization", "summarization"] to indices
     tokens: [
       { name: "ETH", balance: "1.29801", value: "$3,245.67", icon: "🔷" },
       { name: "BTC", balance: "0.07708", value: "$4,982.31", icon: "🟠" },
