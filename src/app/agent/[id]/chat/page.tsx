@@ -14,7 +14,6 @@ import ChatLoading from "./loading";
 import { reactiveAgent } from "@/utils/agent/react";
 import { HumanMessage } from "@langchain/core/messages";
 import ReactMarkdown from "react-markdown";
-import { useMessageStore } from "@/components/providers/message-provider";
 
 type Message = {
   message: string;

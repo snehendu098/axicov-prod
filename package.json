@@ -16,6 +16,7 @@
     "@langchain/langgraph": "^0.2.63",
     "@langchain/langgraph-checkpoint": "^0.0.16",
     "@langchain/langgraph-checkpoint-mongodb": "^0.0.6",
+    "@langchain/mistralai": "^0.2.0",
     "@tailwindcss/typography": "^0.5.16",
     "@thirdweb-dev/sdk": "^4.0.99",
     "axios": "^1.8.4",

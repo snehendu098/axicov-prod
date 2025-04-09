@@ -1,6 +1,6 @@
 import { Agent } from ".";
 import { createEDUTools } from "../tools";
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatMistralAI } from "@langchain/mistralai";
 import { MemorySaver } from "@langchain/langgraph-checkpoint";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 
@@ -25,10 +25,10 @@ export const reactiveAgent = async (item: IRuntime) => {
     item.tools.includes(idx)
   );
 
-  const llm = new ChatGoogleGenerativeAI({
-    temperature: 0.7,
-    model: "gemini-1.5-pro",
-    apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
+  const llm = new ChatMistralAI({
+    model: "mistral-large-latest",
+    maxRetries: 2,
+    apiKey: process.env.NEXT_PUBLIC_MISTRAL!,
   });
 
   const checkpointer = new MemorySaver();
@@ -93,7 +93,8 @@ Your name is ${item.info.name} (Agent).
           2. NEVER try to be over professional
           3. ALWAYS be friendly to the user
           4. NEVER act over politely
-          4. ALWAYS be concise and to the point
+          5. ALWAYS be concise and to the point
+          6. ALWAYS search the web for answers when needed
         
         Response Formatting:
         - Use proper line breaks between different sections of your response for better readability
