@@ -17,6 +17,12 @@ keywords: string, eg "blockchain" (required)
 - Don't separate the keywords using ',', ';' or anything other than just a whitespace
 - ALWAYS make sure that keywords are always 1 word and in lowercase
 
+**RESPONSE INSTRUCTIONS**:
+- Always provide the job url in the response
+- Always provide the job location in the response
+- Always provide the job company in the response
+- Always make sure that the response is complete and properly formatted using markdown
+
 **EXAMPLES**
 User: Find me some jobs
 You: Please provide the job keywords
@@ -35,7 +41,14 @@ You: <search job with keyword "backend">
   protected async _call(input: string): Promise<string> {
     try {
       const parsedInput = parseJson(input);
-      const jobs = await this.agent.searchJobs(parsedInput.keywords);
+      const jobs = (await this.agent.searchJobs(parsedInput.keywords)).map(
+        (job: any) => ({
+          name: job.name,
+          company: job.company,
+          url: job.url,
+          location: job.location,
+        })
+      );
 
       return JSON.stringify({
         status: "success",

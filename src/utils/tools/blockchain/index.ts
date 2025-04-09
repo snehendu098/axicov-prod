@@ -1,4 +1,3 @@
-import { updateMessageFromAnywhere } from "@/components/providers/message-provider";
 import { Agent } from "@/utils/agent";
 
 export const getBalance = async (agent: Agent, address?: string) => {
