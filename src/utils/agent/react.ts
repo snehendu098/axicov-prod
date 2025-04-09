@@ -1,6 +1,6 @@
 import { Agent } from ".";
 import { createEDUTools } from "../tools";
-import { ChatMistralAI } from "@langchain/mistralai";
+import { MistralAI } from "@langchain/mistralai";
 import { MemorySaver } from "@langchain/langgraph-checkpoint";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 
@@ -25,7 +25,7 @@ export const reactiveAgent = async (item: IRuntime) => {
     item.tools.includes(idx)
   );
 
-  const llm = new ChatMistralAI({
+  const llm = new MistralAI({
     model: "mistral-large-latest",
     maxRetries: 2,
     apiKey: process.env.NEXT_PUBLIC_MISTRAL!,
