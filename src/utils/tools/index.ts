@@ -5,7 +5,7 @@ import {
   TokenInfoTool,
   TokenTransferTool,
 } from "./blockchain/tool";
-import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
+import { Serper } from "@langchain/community/tools/serper";
 import {
   GenerateCurrentAffairsQuiz,
   GetBookRecommendations,
@@ -16,10 +16,7 @@ export const createEDUTools = (agent: Agent) => {
   const tools = [
     new EDUBalanceTool(agent),
     new TokenInfoTool(agent),
-    new TavilySearchResults({
-      maxResults: 1,
-      apiKey: process.env.NEXT_PUBLIC_TAVILY_API_KEY,
-    }),
+    new Serper(process.env.NEXT_PUBLIC_SEARCH!),
     new TokenTransferTool(agent),
     new CreateTokenTool(agent),
     new SearchJobs(agent),
