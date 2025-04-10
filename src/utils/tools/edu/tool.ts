@@ -124,11 +124,12 @@ Inputs ( input is a JSON string ):
 difficulty: string, eg "hard" (required)
 n_questions: number, eg 10 (required)
 topic: string, eg "science" (required)
-n_options: number, eg 4 (optional)
+n_options: number, eg 4 (optional, the default value is 4)
 
 **IMPORTANT INSTRUCTIONS**:
 - Don't generate the the required parameters yourself
 - Always provide response in the following markdown format:
+\`\`\`
 # <QUIZ TITLE>
 <A short description of the quiz>
 
@@ -140,28 +141,7 @@ n_options: number, eg 4 (optional)
   - <Option 3>
   - <Option 4>
   - Correct Option: <Correct Option> (only mention this if the quiz is being generated for teacher and not student)
-
-### <Question 2>
-  - <Option 1>
-  - <Option 2>
-  - <Option 3>
-  - <Option 4>
-  - Correct Option: <Correct Option> (only mention this if the quiz is being generated for teacher and not student)
-
-### <Question 3>
-  - <Option 1>
-  - <Option 2>
-  - <Option 3>
-  - <Option 4>
-  - Correct Option: <Correct Option> (only mention this if the quiz is being generated for teacher and not student)
-
-### <Question 4>
-  - <Option 1>
-  - <Option 2>
-  - <Option 3>
-  - <Option 4>
-  - Correct Option: <Correct Option> (only mention this if the quiz is being generated for teacher and not student)
-
+\`\`\`  
 **RESPONSE INSTRUCTIONS**:
 - Always provide the quiz title in the response
 - Always provide the quiz description in the response
