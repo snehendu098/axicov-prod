@@ -115,7 +115,7 @@ You: <search book with keyword "science fiction">
 }
 
 export class GenerateQuiz extends Tool {
-  name = "generate_current_affairs_quiz";
+  name = "generate__quiz";
   description = `Generate a quiz based on arbitary topic
 
 This tool will generate a quiz based on the topic, difficulty, number of questions provided by the user
