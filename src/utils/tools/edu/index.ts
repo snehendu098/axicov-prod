@@ -1,4 +1,7 @@
 import axios from "axios";
+import { createReactAgent } from "@langchain/langgraph/prebuilt";
+import { llm, serperTool } from "@/constants";
+import { HumanMessage } from "@langchain/core/messages";
 
 export const searchJobs = async (keywords: string) => {
   const options = {
@@ -48,20 +51,41 @@ export const getBooks = async (keywords: string) => {
   }
 };
 
-export const generateQuiz = async () => {
-  const options = {
-    method: "GET",
-    url: "https://current-affairs-of-india.p.rapidapi.com/today-quiz",
-    headers: {
-      "x-rapidapi-key": "cbb05f142fmsh1f86fd2c613b03ap172139jsn5ed48da4bff4",
-      "x-rapidapi-host": "current-affairs-of-india.p.rapidapi.com",
-    },
-  };
-
+export const generateQuiz = async (
+  difficulty: string,
+  n_questions: number,
+  topic: string,
+  n_options?: number
+) => {
   try {
-    const { data } = await axios.request(options);
+    const reactAgent = createReactAgent({
+      llm,
+      tools: [serperTool],
+      messageModifier: `You are an expert Quiz Generator. 
+Generate a multiple-choice quiz of ${difficulty} difficulty, give me ${n_questions} questions and answers about ${topic}.
+Each question should have exactly ${
+        n_options || 4
+      } options. Make 100%% sure that there is only one correct option and that this is one of the {n_options} options.
+With every question, also give a brief explanation on why this is the right answer and the others are not.
+Give the quiz a title based on the topic.
 
-    return data;
+Make sure to search the web to generate the quiz and provide the most accurate and up-to-date information if needed
+
+ALWAYS provide clear responses in **markdown format only**.
+`,
+    });
+
+    const response = await reactAgent.invoke({
+      messages: [
+        new HumanMessage(
+          `Generate a ${difficulty} quiz on ${topic} with ${n_questions} questions and ${
+            n_options || 4
+          } options`
+        ),
+      ],
+    });
+
+    return response.messages[0].content.toString();
   } catch (error) {
     return error;
   }

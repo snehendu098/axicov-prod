@@ -114,16 +114,60 @@ You: <search book with keyword "science fiction">
   }
 }
 
-export class GenerateCurrentAffairsQuiz extends Tool {
+export class GenerateQuiz extends Tool {
   name = "generate_current_affairs_quiz";
-  description = `Generate a quiz based on the current affairs
+  description = `Generate a quiz based on arbitary topic
 
-This tool will generate a quiz based on the current affairs
-It will return a JSON string with the following structure:
+This tool will generate a quiz based on the topic, difficulty, number of questions provided by the user
 
-**EXAMPLES**
-User: Generate a quiz based on current affairs
-You: <generate quiz>
+Inputs ( input is a JSON string ):
+difficulty: string, eg "hard" (required)
+n_questions: number, eg 10 (required)
+topic: string, eg "science" (required)
+n_options: number, eg 4 (optional)
+
+**IMPORTANT INSTRUCTIONS**:
+- Don't generate the the required parameters yourself
+- Always provide response in the following markdown format:
+# <QUIZ TITLE>
+<A short description of the quiz>
+
+# Questions:
+
+### <Question 1>
+  - <Option 1>
+  - <Option 2>
+  - <Option 3>
+  - <Option 4>
+  - Correct Option: <Correct Option> (only mention this if the quiz is being generated for teacher and not student)
+
+### <Question 2>
+  - <Option 1>
+  - <Option 2>
+  - <Option 3>
+  - <Option 4>
+  - Correct Option: <Correct Option> (only mention this if the quiz is being generated for teacher and not student)
+
+### <Question 3>
+  - <Option 1>
+  - <Option 2>
+  - <Option 3>
+  - <Option 4>
+  - Correct Option: <Correct Option> (only mention this if the quiz is being generated for teacher and not student)
+
+### <Question 4>
+  - <Option 1>
+  - <Option 2>
+  - <Option 3>
+  - <Option 4>
+  - Correct Option: <Correct Option> (only mention this if the quiz is being generated for teacher and not student)
+
+**RESPONSE INSTRUCTIONS**:
+- Always provide the quiz title in the response
+- Always provide the quiz description in the response
+- Always provide the quiz questions in the response
+- Always provide the quiz options in the response
+- Provide the quiz correct option in the response only if the quiz is being generated for teacher and not student
 `;
 
   constructor(private agent: Agent) {
@@ -132,7 +176,13 @@ You: <generate quiz>
 
   protected async _call(input: string): Promise<string> {
     try {
-      const quiz = await this.agent.generateCurrentAffairsQuiz();
+      const parsedInput = parseJson(input);
+      const quiz = await this.agent.generateQuiz(
+        parsedInput.difficulty,
+        parsedInput.n_questions,
+        parsedInput.topic,
+        parsedInput.n_options
+      );
 
       return JSON.stringify({
         status: "success",

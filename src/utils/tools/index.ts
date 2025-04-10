@@ -5,23 +5,19 @@ import {
   TokenInfoTool,
   TokenTransferTool,
 } from "./blockchain/tool";
-import { Serper } from "@langchain/community/tools/serper";
-import {
-  GenerateCurrentAffairsQuiz,
-  GetBookRecommendations,
-  SearchJobs,
-} from "./edu/tool";
+import { GenerateQuiz, GetBookRecommendations, SearchJobs } from "./edu/tool";
+import { serperTool } from "@/constants";
 
 export const createEDUTools = (agent: Agent) => {
   const tools = [
     new EDUBalanceTool(agent),
     new TokenInfoTool(agent),
-    new Serper(process.env.NEXT_PUBLIC_SEARCH!),
+    serperTool,
     new TokenTransferTool(agent),
     new CreateTokenTool(agent),
     new SearchJobs(agent),
     new GetBookRecommendations(agent),
-    new GenerateCurrentAffairsQuiz(agent),
+    new GenerateQuiz(agent),
   ];
 
   return tools;

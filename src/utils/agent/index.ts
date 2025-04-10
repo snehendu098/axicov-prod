@@ -54,7 +54,12 @@ export class Agent {
     return getBooks(keywords);
   }
 
-  generateCurrentAffairsQuiz() {
-    return generateQuiz();
+  generateQuiz(
+    difficulty: string,
+    n_questions: number,
+    topic: string,
+    n_options?: number
+  ) {
+    return generateQuiz(difficulty, n_questions, topic, n_options);
   }
 }

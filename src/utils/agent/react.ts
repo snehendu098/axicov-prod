@@ -1,3 +1,4 @@
+import { llm } from "@/constants";
 import { Agent } from ".";
 import { createEDUTools } from "../tools";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
@@ -25,15 +26,9 @@ export const reactiveAgent = async (item: IRuntime) => {
     item.tools.includes(idx)
   );
 
-  const llm = new ChatGoogleGenerativeAI({
-    temperature: 0.7,
-    model: "gemini-1.5-pro",
-    apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
-  });
-
   const checkpointer = new MemorySaver();
   const reactiveAgent = createReactAgent({
-    llm,
+    llm: llm,
     tools,
     checkpointSaver: checkpointer,
     //     messageModifier: `
