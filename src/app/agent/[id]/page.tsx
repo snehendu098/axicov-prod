@@ -69,7 +69,7 @@ export default function AgentInfoPage() {
 
   if (!agent) {
     return (
-      <div className="min-h-screen bg-[#121212] text-white flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
         <div className="text-2xl font-bold mb-4">Agent not found</div>
         <Link href="/" className="text-rose-400 hover:underline">
           Return to Dashboard
@@ -87,7 +87,7 @@ export default function AgentInfoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#121212] text-white relative overflow-x-hidden">
+    <div className="min-h-screen bg-black text-white relative overflow-x-hidden">
       {/* Grid Background */}
       <div className="absolute inset-0 z-0 opacity-40">
         <GridBackground />

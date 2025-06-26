@@ -2,7 +2,7 @@ import { GridBackground } from "@/components/core/grid-background";
 
 export default function CreateLoading() {
   return (
-    <div className="min-h-screen bg-[#121212] text-white relative overflow-x-hidden">
+    <div className="min-h-screen bg-black text-white relative overflow-x-hidden">
       {/* Grid Background */}
       <div className="absolute inset-0 z-0 opacity-40">
         <GridBackground />

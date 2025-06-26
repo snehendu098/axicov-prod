@@ -65,7 +65,7 @@ export default function AgentHome() {
 
   return (
     <div
-      className={`min-h-screen bg-[#121212] text-white flex flex-col items-center relative ${
+      className={`min-h-screen bg-black text-white flex flex-col items-center relative ${
         !hasAgents ? "overflow-hidden h-screen" : "overflow-x-hidden"
       } font-sans`}
     >

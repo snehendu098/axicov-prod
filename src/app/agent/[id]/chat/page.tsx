@@ -190,7 +190,7 @@ export default function AgentChatPage() {
   };
 
   return !loading ? (
-    <div className="min-h-screen h-screen bg-[#121212] text-white flex flex-col relative overflow-hidden">
+    <div className="min-h-screen h-screen bg-black text-white flex flex-col relative overflow-hidden">
       {/* Grid Background */}
       <div className="absolute inset-0 z-0 opacity-50">
         <GridBackground />
@@ -200,7 +200,7 @@ export default function AgentChatPage() {
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-rose-400/10 rounded-full blur-[120px] z-0" />
 
       {/* Header - Fixed at top */}
-      <header className="fixed top-0 left-0 right-0 z-20 border-b border-[#2a2a2a] bg-[#121212]/90 backdrop-blur-sm">
+      <header className="fixed top-0 left-0 right-0 z-20 border-b border-[#2a2a2a] bg-black/90 backdrop-blur-sm">
         <div className="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex items-center space-x-4">
             <Link
@@ -310,7 +310,7 @@ export default function AgentChatPage() {
       </main>
 
       {/* Input Area - Fixed at bottom */}
-      <div className="fixed bottom-0 left-0 right-0 z-20 bg-[#121212]/90 backdrop-blur-sm pt-2 pb-4 border-t border-[#2a2a2a]">
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-black/90 backdrop-blur-sm pt-2 pb-4 border-t border-[#2a2a2a]">
         <div className="max-w-5xl mx-auto px-4">
           <div className="relative rounded-xl bg-[#1a1a1a] border border-[#2a2a2a]">
             <textarea
